@@ -1,0 +1,4 @@
+--patch-module
+Astroids=_
+--add-reads
+Astroids=ALL-UNNAMED

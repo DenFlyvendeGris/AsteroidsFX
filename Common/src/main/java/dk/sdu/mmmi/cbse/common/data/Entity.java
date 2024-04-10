@@ -11,7 +11,10 @@ public class Entity implements Serializable {
     private double x;
     private double y;
     private double rotation;
-    private float radius;
+    private double radius;
+
+    private boolean destroyed;
+
             
 
     public String getID() {
@@ -53,11 +56,35 @@ public class Entity implements Serializable {
         return rotation;
     }
 
-    public void setRadius(float radius) {
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
         this.radius = radius;
     }
-        
-    public float getRadius() {
-        return this.radius;
+
+    public boolean isDestroyed() {
+        return destroyed;
     }
+
+    public void setDestroyed(boolean destroyed) {
+        this.destroyed = destroyed;
+    }
+
+    /*   public double getOneAgainstOne() {
+        return oneAgainstOne;
+    }
+
+   public EntityTag getTag() {
+        return tag;
+    }
+
+   public void setOneAgainstOne(double oneAgainstOne) {
+        this.oneAgainstOne = oneAgainstOne;
+    }
+
+    public void setTag(EntityTag tag) {
+        this.tag = tag;
+    } */
 }

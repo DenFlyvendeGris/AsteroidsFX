@@ -7,10 +7,13 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
+
 import static java.util.stream.Collectors.toList;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -26,7 +29,10 @@ public class Main extends Application {
     private final GameData gameData = new GameData();
     private final World world = new World();
     private final Map<Entity, Polygon> polygons = new ConcurrentHashMap<>();
-    private final Pane gameWindow = new Pane();
+
+    private Pane gameWindow;
+    private int currentEntityAmount;
+    
 
     public static void main(String[] args) {
         launch(Main.class);
@@ -35,6 +41,7 @@ public class Main extends Application {
     @Override
     public void start(Stage window) throws Exception {
         Text text = new Text(10, 20, "Destroyed asteroids: 0");
+        gameWindow = new Pane();
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         gameWindow.getChildren().add(text);
 
@@ -48,6 +55,9 @@ public class Main extends Application {
             }
             if (event.getCode().equals(KeyCode.UP)) {
                 gameData.getKeys().setKey(GameKeys.UP, true);
+            }
+            if (event.getCode().equals(KeyCode.DOWN)) {
+                gameData.getKeys().setKey(GameKeys.REVERSE, true);
             }
             if (event.getCode().equals(KeyCode.SPACE)) {
                 gameData.getKeys().setKey(GameKeys.SPACE, true);
@@ -63,10 +73,12 @@ public class Main extends Application {
             if (event.getCode().equals(KeyCode.UP)) {
                 gameData.getKeys().setKey(GameKeys.UP, false);
             }
+            if (event.getCode().equals(KeyCode.DOWN)) {
+                gameData.getKeys().setKey(GameKeys.REVERSE, false);
+            }
             if (event.getCode().equals(KeyCode.SPACE)) {
                 gameData.getKeys().setKey(GameKeys.SPACE, false);
             }
-
         });
 
         // Lookup all Game Plugins using ServiceLoader
@@ -78,14 +90,19 @@ public class Main extends Application {
             polygons.put(entity, polygon);
             gameWindow.getChildren().add(polygon);
         }
+
         render();
+
         window.setScene(scene);
         window.setTitle("ASTEROIDS");
         window.show();
+
     }
 
     private void render() {
         new AnimationTimer() {
+            private long then = 0;
+
             @Override
             public void handle(long now) {
                 update();
@@ -97,24 +114,33 @@ public class Main extends Application {
     }
 
     private void update() {
+
+        // Update
         for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
             entityProcessorService.process(gameData, world);
         }
-        for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
-            postEntityProcessorService.process(gameData, world);
-        }       
-    }
 
-    private void draw() {        
-        for (Entity polygonEntity : polygons.keySet()) {
-            if(!world.getEntities().contains(polygonEntity)){   
-                Polygon removedPolygon = polygons.get(polygonEntity);               
-                polygons.remove(polygonEntity);                      
-                gameWindow.getChildren().remove(removedPolygon);
+        for (IPostEntityProcessingService postEntityProcessingService : getPostEntityProcessingServices()) {
+            postEntityProcessingService.process(gameData, world);
+        }
+
+        List<Entity> entityListDelete = new ArrayList<>();
+        for (Entity entity : world.getEntities()) {
+            if (entity.isDestroyed()) {
+                entityListDelete.add(entity);
             }
         }
-                
-        for (Entity entity : world.getEntities()) {                      
+        for (Entity entity : entityListDelete) {
+            gameWindow.getChildren().remove(polygons.get(entity));
+            polygons.remove(entity);
+            world.removeEntity(entity);
+        }
+
+        currentEntityAmount = world.getEntities().size();
+    }
+
+    private void draw() {
+        for (Entity entity : world.getEntities()) {
             Polygon polygon = polygons.get(entity);
             if (polygon == null) {
                 polygon = new Polygon(entity.getPolygonCoordinates());
@@ -124,9 +150,16 @@ public class Main extends Application {
             polygon.setTranslateX(entity.getX());
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
-        }
 
+            //TODO move this to individual entityProcessors
+            //List<Entity> removeBullet = new ArrayList<>();
+            //if (entity.getY() > gameData.getDisplayHeight() || entity.getX() > gameData.getDisplayWidth() || entity.getX() < 0 || entity.getY() < 0) {
+            //    removeBullet.add(entity);
+            //}
+        }
     }
+
+
 
     private Collection<? extends IGamePluginService> getPluginServices() {
         return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
