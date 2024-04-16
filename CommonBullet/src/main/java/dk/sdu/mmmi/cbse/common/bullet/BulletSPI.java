@@ -9,5 +9,4 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
  */
 public interface BulletSPI {
     Entity createBullet(Entity e, GameData gameData);
-    Entity removeBullet(Entity entity, GameData gameData);
 }

@@ -101,11 +101,13 @@ public class Main extends Application {
 
     private void render() {
         new AnimationTimer() {
-            private long then = 0;
+            private long then = System.nanoTime();
 
             @Override
             public void handle(long now) {
-                update();
+                long deltaTime = (now - then) / 1000000;
+                then = now;
+                update(deltaTime);
                 draw();
                 gameData.getKeys().update();
             }
@@ -113,7 +115,9 @@ public class Main extends Application {
         }.start();
     }
 
-    private void update() {
+    private void update(long deltaTime) {
+
+        gameData.setDeltaTime(deltaTime);
 
         // Update
         for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {

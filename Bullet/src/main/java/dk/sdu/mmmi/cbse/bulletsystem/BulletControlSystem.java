@@ -19,6 +19,11 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
             double changeY = Math.sin(Math.toRadians(bullet.getRotation()));
             bullet.setX(bullet.getX() + changeX);
             bullet.setY(bullet.getY() + changeY);
+
+
+            if (bullet.getX() < 0 || bullet.getX() > gameData.getDisplayWidth() || bullet.getY() < 0 || bullet.getY() > gameData.getDisplayHeight()) {
+                bullet.setDestroyed(true);
+            }
         }
     }
 
@@ -38,13 +43,4 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
     private void setShape(Entity entity) {
 
     }
-
-    @Override
-    public Entity removeBullet(Entity bullet, GameData gameData) {
-        if (bullet.getX() + bullet.getY() >= gameData.getDisplayHeight() + gameData.getDisplayWidth()) {
-            removeBullet(bullet, gameData);
-        }
-        return null;
-    }
-
 }

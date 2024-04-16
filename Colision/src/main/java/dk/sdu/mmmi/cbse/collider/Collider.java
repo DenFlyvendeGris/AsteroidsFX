@@ -22,9 +22,10 @@ public class Collider implements IPostEntityProcessingService {
                     continue;
 
                 double distance = Math.sqrt(Math.pow(entity.getX()-againstEntity.getX(), 2) + Math.pow(entity.getY()-againstEntity.getY(), 2));
-                System.out.println(entity.getRadius() + " : " + againstEntity.getRadius());
+
                 if (distance <= entity.getRadius() + againstEntity.getRadius()) {
                     entity.setDestroyed(true);
+                    againstEntity.setDestroyed(true);
                 }
             }
         }
