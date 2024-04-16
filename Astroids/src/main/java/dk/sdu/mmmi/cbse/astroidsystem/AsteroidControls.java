@@ -24,6 +24,10 @@ public class AsteroidControls implements IEntityProcessingService {
             double changeY = Math.sin(Math.toRadians(entity.getRotation()));
             entity.setX(entity.getX() + changeX * ((Astroid) entity).getSpeed());
             entity.setY(entity.getY() + changeY * ((Astroid) entity).getSpeed());
+
+            if (entity.getX() <= 0 || entity.getX() >= gameData.getDisplayWidth() || entity.getY() <=0 || entity.getY() >= gameData.getDisplayHeight()) {
+                entity.setDestroyed(true);
+            }
         }
 
 
@@ -41,47 +45,6 @@ public class AsteroidControls implements IEntityProcessingService {
         return astroid;
     }
 
-    private void setSpawnLocation(Entity asteroid,GameData gameData) {
-
-        int asteroidSpawnX = random.nextInt(gameData.getDisplayWidth());
-        int asteroidSpawnY = random.nextInt(gameData.getDisplayHeight());
-
-        if (random.nextInt(0,3) == 1) {
-
-            // Top
-            if (asteroidSpawnX > asteroidSpawnY) {
-                asteroid.setX(asteroidSpawnX);
-                asteroid.setY(-30);
-                asteroid.setRotation(random.nextInt(0,180));
-                System.out.println("kagemand top");
-            }
-
-            // Left
-            if (asteroidSpawnY >= asteroidSpawnX) {
-                asteroid.setX(-30);
-                asteroid.setY(asteroidSpawnY);
-                asteroid.setRotation(90 - random.nextInt(0,180));
-                System.out.println("gulderød venstre");
-            }
-        } else {
-
-            // Bottom
-            if (asteroidSpawnX > asteroidSpawnY) {
-                asteroid.setX(asteroidSpawnX);
-                asteroid.setY(gameData.getDisplayHeight() + 30);
-                asteroid.setRotation(180 + random.nextInt(0,180));
-                System.out.println("Ostehaps bund");
-            }
-
-            // Right
-            if (asteroidSpawnY >= asteroidSpawnX) {
-                asteroid.setX(gameData.getDisplayWidth() + 30);
-                asteroid.setY(asteroidSpawnY);
-                asteroid.setRotation(270 - random.nextInt(0,180));
-                System.out.println("utilfredshed til højre");
-            }
-        }
-    }
     private void setAsteroidShape(Entity asteroid) {
 
         // Calculate points of asteroid
