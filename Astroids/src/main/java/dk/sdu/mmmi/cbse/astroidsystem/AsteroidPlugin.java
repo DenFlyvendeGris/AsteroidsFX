@@ -9,7 +9,8 @@ import static dk.sdu.mmmi.cbse.astroidsystem.AstroidSize.LARGE;
 public class AsteroidPlugin implements IGamePluginService {
     @Override
     public void start(GameData gameData, World world) {
-
+        AstroidSplitterLogic.setWorld(world);
+        AstroidSplitterLogic.setGameData(gameData);
     }
 
     @Override

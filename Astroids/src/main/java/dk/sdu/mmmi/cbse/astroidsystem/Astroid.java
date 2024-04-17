@@ -43,6 +43,6 @@ public class Astroid extends Entity {
 
             return;
         }
-        this.setDestroyed(true);
+        new AstroidSplitterLogic().splitter(this);
     }
 }
