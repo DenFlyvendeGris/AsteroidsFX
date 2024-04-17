@@ -9,17 +9,8 @@ public class EnemyPlugin implements IGamePluginService {
     private Entity enemy;
     @Override
     public void start(GameData gameData, World world) {
-        enemy = createEnemies(gameData);
+        enemy = new EnemyFactory().createEnemies(gameData);
         world.addEntity(enemy);
-    }
-
-    private Entity createEnemies(GameData gameData) {
-        Entity enemies = new Enemy();
-        enemies.setPolygonCoordinates(-5,-5,10,0,-5,5);
-        enemies.setY(gameData.getDisplayWidth()/5);
-        enemies.setX(gameData.getDisplayHeight()/5);
-        enemies.setRadius(20);
-        return enemies;
     }
 
     @Override

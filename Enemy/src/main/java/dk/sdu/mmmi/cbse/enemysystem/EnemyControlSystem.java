@@ -18,7 +18,11 @@ public class EnemyControlSystem implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
         for (Entity enemy : world.getEntities(Enemy.class)) {
-            //
+
+            if (enemy.getX() <= 0 || enemy.getX() >= gameData.getDisplayWidth() || enemy.getY() <=0 || enemy.getY() >= gameData.getDisplayHeight()) {
+                enemy.setDestroyed(true);
+            }
+
             if (random.nextInt(0,100) >= 50) {
                 enemy.setRotation(enemy.getRotation() - 5);
             }
@@ -37,7 +41,10 @@ public class EnemyControlSystem implements IEntityProcessingService {
                 }
             }
         }
-
+        if (Math.random() < 0.005) {
+            Enemy enemy = new EnemyFactory().createEnemies(gameData);
+            world.addEntity(enemy);
+        }
     }
 
     private Collection<? extends BulletSPI> getBulletSPIs() {
