@@ -14,6 +14,8 @@ import static java.util.stream.Collectors.toList;
 
 public class EnemyControlSystem implements IEntityProcessingService {
 
+
+
     Random random = new Random();
     @Override
     public void process(GameData gameData, World world) {
@@ -23,23 +25,29 @@ public class EnemyControlSystem implements IEntityProcessingService {
                 enemy.setDestroyed(true);
             }
 
-            if (random.nextInt(0,100) >= 50) {
-                enemy.setRotation(enemy.getRotation() - 5);
+            if (((Enemy) enemy).canChangeMovement())
+                ((Enemy) enemy).setMove(random.nextInt(0, 3));
+
+
+            if (((Enemy) enemy).getCurrentMove() == 1) {
+                enemy.setRotation(enemy.getRotation() - 200 * gameData.getDeltaTimeInSec());
+
             }
-            if (random.nextInt(0,100) >= 50) {
-                enemy.setRotation(enemy.getRotation() + 5);
+            if (((Enemy) enemy).getCurrentMove() == 2) {
+                enemy.setRotation(enemy.getRotation() + 200 * gameData.getDeltaTimeInSec());
             }
-            if (100%Math.random()*10 > 3.8) {
-                double changeX = Math.cos(Math.toRadians(enemy.getRotation()));
-                double changeY = Math.sin(Math.toRadians(enemy.getRotation()));
-                enemy.setX(enemy.getX() + changeX);
-                enemy.setY(enemy.getY() + changeY);
-            }
-            if (random.nextInt(0,50) % 5 == 10%2) {
+
+            double changeX = Math.cos(Math.toRadians(enemy.getRotation()));
+            double changeY = Math.sin(Math.toRadians(enemy.getRotation()));
+            enemy.setX(enemy.getX() + changeX);
+            enemy.setY(enemy.getY() + changeY);
+
+            if (((Enemy) enemy).canFire()) {
                 for (BulletSPI bulletSPI : getBulletSPIs()) {
                     world.addEntity(bulletSPI.createBullet(enemy, gameData));
                 }
             }
+            ((Enemy) enemy).tickTimers(gameData.getDeltaTimeInSec());
         }
         if (Math.random() < 0.005) {
             Enemy enemy = new EnemyFactory().createEnemies(gameData);
