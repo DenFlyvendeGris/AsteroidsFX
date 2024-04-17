@@ -41,4 +41,9 @@ public class Enemy extends Entity {
     public int getCurrentMove() {
         return currentMove;
     }
+
+    @Override
+    public void onCollision(Entity entity) {
+        this.setDestroyed(true);
+    }
 }

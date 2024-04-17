@@ -15,4 +15,9 @@ public class Bullet extends Entity {
     public void setShooter(Entity shooter) {
         this.shooter = shooter;
     }
+
+    @Override
+    public void onCollision(Entity entity) {
+        this.setDestroyed(true);
+    }
 }

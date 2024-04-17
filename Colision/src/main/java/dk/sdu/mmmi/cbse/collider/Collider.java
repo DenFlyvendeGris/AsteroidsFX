@@ -24,8 +24,7 @@ public class Collider implements IPostEntityProcessingService {
                 double distance = Math.sqrt(Math.pow(entity.getX()-againstEntity.getX(), 2) + Math.pow(entity.getY()-againstEntity.getY(), 2));
 
                 if (distance <= entity.getRadius() + againstEntity.getRadius()) {
-                    entity.setDestroyed(true);
-                    againstEntity.setDestroyed(true);
+                    entity.onCollision(againstEntity);
                 }
             }
         }

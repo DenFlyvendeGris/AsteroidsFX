@@ -24,4 +24,9 @@ public class Player extends Entity {
         return false;
     }
 
+
+    @Override
+    public void onCollision(Entity entity) {
+        this.setDestroyed(true);
+    }
 }

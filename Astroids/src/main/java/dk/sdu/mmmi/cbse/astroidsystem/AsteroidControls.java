@@ -46,22 +46,15 @@ public class AsteroidControls implements IEntityProcessingService {
     }
 
     private void setAsteroidShape(Entity asteroid) {
-
-        // Calculate points of asteroid
-        double[][] points = new double[5][2];
-        for (int i = 0; i < 5; i++) {
-            double angle = Math.toRadians(72 * i - 90);
-            points[i][0] = asteroid.getRadius() * Math.cos(angle) + random.nextInt(10,25);
-            points[i][1] = asteroid.getRadius() * Math.sin(angle) + random.nextInt(10,25);
-        }
-
-        // Set coordinates of asteroid polygon from the semi randomly generated values
         asteroid.setPolygonCoordinates(
-                points[0][0], points[0][1],
-                points[1][0], points[1][1],
-                points[2][0], points[2][1],
-                points[3][0], points[3][1],
-                points[4][0], points[4][1]);
+                0, 1 * asteroid.getRadius(),
+                0.71 * asteroid.getRadius(), 0.71 * asteroid.getRadius(),
+                1 * asteroid.getRadius(), 0,
+                0.71 * asteroid.getRadius(), -0.71 * asteroid.getRadius(),
+                0, -1 * asteroid.getRadius(),
+                -0.71 * asteroid.getRadius(), -0.71 * asteroid.getRadius(),
+                -1 * asteroid.getRadius(), 0,
+                -0.71 * asteroid.getRadius(), 0.71 * asteroid.getRadius());
     }
 
 }

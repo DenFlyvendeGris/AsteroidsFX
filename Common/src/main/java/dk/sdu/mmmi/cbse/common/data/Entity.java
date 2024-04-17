@@ -72,19 +72,7 @@ public class Entity implements Serializable {
         this.destroyed = destroyed;
     }
 
-    /*   public double getOneAgainstOne() {
-        return oneAgainstOne;
+    public void onCollision(Entity other) {
+       System.out.println("Collision not implemented for " + getID() + "!");
     }
-
-   public EntityTag getTag() {
-        return tag;
-    }
-
-   public void setOneAgainstOne(double oneAgainstOne) {
-        this.oneAgainstOne = oneAgainstOne;
-    }
-
-    public void setTag(EntityTag tag) {
-        this.tag = tag;
-    } */
 }
