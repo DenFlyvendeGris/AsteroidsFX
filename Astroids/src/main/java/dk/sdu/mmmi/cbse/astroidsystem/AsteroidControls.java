@@ -5,7 +5,6 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
-import java.util.Random;
 
 
 public class AsteroidControls implements IEntityProcessingService {

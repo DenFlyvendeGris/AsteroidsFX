@@ -4,7 +4,7 @@ import dk.sdu.mmmi.cbse.common.data.Entity;
 
 public class Astroid extends Entity {
 
-    private AstroidSize size;
+    private final AstroidSize size;
     private double speed;
 
     public Astroid(AstroidSize size) {
