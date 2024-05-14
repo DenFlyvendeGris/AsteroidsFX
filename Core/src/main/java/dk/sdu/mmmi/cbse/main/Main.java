@@ -7,11 +7,9 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
+
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.stream.Collectors.toList;
@@ -23,6 +21,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.URI;
 
 public class Main extends Application {
 
@@ -32,6 +34,7 @@ public class Main extends Application {
 
     private Pane gameWindow;
     private int currentEntityAmount;
+    private Text text = new Text(10, 20, "Destroyed asteroids: 0");
     
 
     public static void main(String[] args) {
@@ -40,7 +43,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage window) throws Exception {
-        Text text = new Text(10, 20, "Destroyed asteroids: 0");
+        timer.scheduleAtFixedRate(task, 0, 500);
         gameWindow = new Pane();
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         gameWindow.getChildren().add(text);
@@ -160,6 +163,26 @@ public class Main extends Application {
             //if (entity.getY() > gameData.getDisplayHeight() || entity.getX() > gameData.getDisplayWidth() || entity.getX() < 0 || entity.getY() < 0) {
             //    removeBullet.add(entity);
             //}
+        }
+    }
+
+    Timer timer = new Timer();
+
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            scoringSystemText();
+        }
+    };
+
+    HttpClient textHTTP = HttpClient.newHttpClient();
+    private void scoringSystemText() {
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/points/mypoints")).GET().build();
+        try {
+            HttpResponse<String> httpResponse = textHTTP.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            text.setText("score: " + httpResponse.body());
+        } catch (IOException | InterruptedException exception) {
+            exception.getStackTrace();
         }
     }
 

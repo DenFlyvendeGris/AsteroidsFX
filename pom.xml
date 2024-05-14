@@ -27,6 +27,7 @@
         <module>Enemy</module>
         <module>Colision</module>
         <module>Astroids</module>
+        <module>ScoringSystem</module>
     </modules>
     <properties>
         <java>java</java>
